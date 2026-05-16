@@ -1,0 +1,6 @@
+{
+  "name": "LinguaPartner",
+  "description": "A real-time conversational AI language practice tool using Gemini Live.",
+  "requestFramePermissions": ["microphone"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
