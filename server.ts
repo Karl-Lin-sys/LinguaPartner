@@ -1,3 +1,4 @@
+import { localApiOnly, isLocalRequest } from './local-api-guard.mjs';
 import express from "express";
 import http from "http";
 import path from "path";
@@ -16,6 +17,7 @@ const ai = new GoogleGenAI({
 
 async function startServer() {
   const app = express();
+app.use('/api', localApiOnly(() => PORT));
   const PORT = 3000;
 
   // Add a route to initialize the websocket connection config if needed, or we just handle it directly.
@@ -25,7 +27,7 @@ async function startServer() {
 
   const server = http.createServer(app);
 
-  const wss = new WebSocketServer({ server });
+  const wss = new WebSocketServer({ verifyClient: (info) => isLocalRequest(info.req, PORT, true), server });
 
   wss.on("connection", async (clientWs, request) => {
     // Only handle /live connections
@@ -148,7 +150,7 @@ async function startServer() {
     });
   }
 
-  server.listen(PORT, "0.0.0.0", () => {
+  server.listen(PORT, "127.0.0.1", () => {
     console.log(`Server running on http://HOST:${PORT}`);
   });
 }
